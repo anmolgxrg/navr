@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sensor Data Visualization</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1, h2 { text-align: center; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 50px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; }
+    .grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .chart { height: 400px; }
+  </style>
+</head>
+
+<body>
+  <h1>Sensor Data Dashboard</h1>
+
+  <h2>Data Table</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Subject ID</th>
+        <th>Temperature</th>
+        <th>Accelerometer Avg</th>
+        <th>Gyroscope Avg</th>
+        <th>PPG Avg</th>
+        <th>Respiration</th>
+        <th>Body Battery</th>
+        <th>Skin Conductance</th>
+        <th>Cognitive Load</th>
+        <th>Avg Heart Rate</th>
+        <th>EDA Level</th>
+        <th>Emotional State</th>
+      </tr>
+    </thead>
+    <tbody id="table-body">
+      <!-- Data will be injected here by JS -->
+    </tbody>
+  </table>
+
+  <h2>Sensor Metrics Plots</h2>
+  <div class="grid-container" id="plots">
+    <!-- Plots will be injected here -->
+  </div>
+
+<script>
+const data = [
+  {Subject_ID: 101, Temperature: 36.5, Accelerometer_Avg: 0.33, Gyroscope_Avg: 0.013, PPG_Avg: 600.0, Respiration: 18, Body_Battery: 85, Skin_Conductance: 0.12, Cognitive_Load: 7, Avg_Heart_Rate: 85, EDA_Level: 0.75, Emotional_State: 'Stressed'},
+  {Subject_ID: 102, Temperature: 36.7, Accelerometer_Avg: 0.333, Gyroscope_Avg: 0.017, PPG_Avg: 616.67, Respiration: 19, Body_Battery: 88, Skin_Conductance: 0.14, Cognitive_Load: 8, Avg_Heart_Rate: 92, EDA_Level: 0.80, Emotional_State: 'Anxious'},
+  {Subject_ID: 103, Temperature: 36.4, Accelerometer_Avg: 0.323, Gyroscope_Avg: 0.010, PPG_Avg: 583.33, Respiration: 17, Body_Battery: 82, Skin_Conductance: 0.10, Cognitive_Load: 6, Avg_Heart_Rate: 78, EDA_Level: 0.65, Emotional_State: 'Neutral'},
+  {Subject_ID: 104, Temperature: 36.6, Accelerometer_Avg: 0.32, Gyroscope_Avg: 0.010, PPG_Avg: 573.33, Respiration: 16, Body_Battery: 80, Skin_Conductance: 0.09, Cognitive_Load: 4, Avg_Heart_Rate: 72, EDA_Level: 0.40, Emotional_State: 'Happy'},
+  {Subject_ID: 105, Temperature: 36.5, Accelerometer_Avg: 0.32, Gyroscope_Avg: 0.007, PPG_Avg: 563.33, Respiration: 15, Body_Battery: 78, Skin_Conductance: 0.08, Cognitive_Load: 5, Avg_Heart_Rate: 75, EDA_Level: 0.45, Emotional_State: 'Relaxed'},
+  {Subject_ID: 106, Temperature: 36.8, Accelerometer_Avg: 0.327, Gyroscope_Avg: 0.017, PPG_Avg: 620.0, Respiration: 20, Body_Battery: 90, Skin_Conductance: 0.15, Cognitive_Load: 7, Avg_Heart_Rate: 81, EDA_Level: 0.60, Emotional_State: 'Engaged'},
+  {Subject_ID: 107, Temperature: 36.4, Accelerometer_Avg: 0.323, Gyroscope_Avg: 0.013, PPG_Avg: 600.0, Respiration: 18, Body_Battery: 85, Skin_Conductance: 0.12, Cognitive_Load: 6, Avg_Heart_Rate: 79, EDA_Level: 0.55, Emotional_State: 'Neutral'},
+  {Subject_ID: 108, Temperature: 36.9, Accelerometer_Avg: 0.333, Gyroscope_Avg: 0.020, PPG_Avg: 633.33, Respiration: 21, Body_Battery: 92, Skin_Conductance: 0.16, Cognitive_Load: 8, Avg_Heart_Rate: 88, EDA_Level: 0.70, Emotional_State: 'Excited'},
+  {Subject_ID: 109, Temperature: 37.0, Accelerometer_Avg: 0.337, Gyroscope_Avg: 0.023, PPG_Avg: 643.33, Respiration: 22, Body_Battery: 95, Skin_Conductance: 0.18, Cognitive_Load: 9, Avg_Heart_Rate: 90, EDA_Level: 0.78, Emotional_State: 'Tense'},
+  {Subject_ID: 110, Temperature: 36.5, Accelerometer_Avg: 0.323, Gyroscope_Avg: 0.010, PPG_Avg: 578.33, Respiration: 16, Body_Battery: 82, Skin_Conductance: 0.11, Cognitive_Load: 5, Avg_Heart_Rate: 76, EDA_Level: 0.50, Emotional_State: 'Calm'}
+];
+
+const metrics = [
+  'Temperature', 'Accelerometer_Avg', 'Gyroscope_Avg', 'PPG_Avg', 'Respiration',
+  'Body_Battery', 'Skin_Conductance', 'Cognitive_Load', 'Avg_Heart_Rate', 'EDA_Level'
+];
+
+// Inject table rows
+const tableBody = document.getElementById('table-body');
+data.forEach(row => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${row.Subject_ID}</td>
+    <td>${row.Temperature}</td>
+    <td>${row.Accelerometer_Avg.toFixed(3)}</td>
+    <td>${row.Gyroscope_Avg.toFixed(3)}</td>
+    <td>${row.PPG_Avg.toFixed(2)}</td>
+    <td>${row.Respiration}</td>
+    <td>${row.Body_Battery}</td>
+    <td>${row.Skin_Conductance}</td>
+    <td>${row.Cognitive_Load}</td>
+    <td>${row.Avg_Heart_Rate}</td>
+    <td>${row.EDA_Level}</td>
+    <td>${row.Emotional_State}</td>
+  `;
+  tableBody.appendChild(tr);
+});
+
+// Inject plots
+const plotsContainer = document.getElementById('plots');
+metrics.forEach(metric => {
+  const div = document.createElement('div');
+  div.className = 'chart';
+  div.id = metric;
+  plotsContainer.appendChild(div);
+
+  const trace = {
+    x: data.map(d => d.Subject_ID),
+    y: data.map(d => d[metric]),
+    text: data.map(d => d.Emotional_State),
+    mode: 'lines+markers+text',
+    type: 'scatter',
+    textposition: 'top center'
+  };
+
+  const layout = {
+    title: metric,
+    xaxis: { title: 'Subject ID' },
+    yaxis: { title: metric }
+  };
+
+  Plotly.newPlot(metric, [trace], layout);
+});
+</script>
+
+</body>
+</html>
